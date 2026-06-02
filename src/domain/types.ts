@@ -20,12 +20,19 @@ export type VerbFormId =
 
 export type VerbFormStatus = "standard" | "uncommon" | "not-applicable";
 
-export interface VerbFormValue {
-  surface: string | null;
-  reading: string | null;
-  status: VerbFormStatus;
-  note?: string;
-}
+export type VerbFormValue =
+  | {
+      surface: string;
+      reading: string;
+      status: Exclude<VerbFormStatus, "not-applicable">;
+      note?: string;
+    }
+  | {
+      surface: null;
+      reading: null;
+      status: "not-applicable";
+      note?: string;
+    };
 
 export type VerbFormOverride = VerbFormValue;
 
