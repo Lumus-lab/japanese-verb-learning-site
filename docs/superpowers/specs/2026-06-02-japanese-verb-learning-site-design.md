@@ -62,7 +62,7 @@
 - `る` 結尾：依前一個假名推測為五段或一段動詞。
 - 無法辨識時，不產生硬湊的答案。
 
-若假名輸入可能對應不同動詞，例如 `きる` 可能是五段動詞 `切る` 或一段動詞 `着る`，網站應顯示候選或要求使用者補充資訊，不可自行挑選其中一個。未知漢字動詞若無法從輸入判斷 `る` 前的讀音，也應要求補充假名。
+若假名輸入可能對應不同動詞，例如 `きる` 可能是五段動詞 `切る` 或一段動詞 `着る`，網站應顯示候選或要求使用者補充資訊，不可自行挑選其中一個。未收錄且包含漢字的動詞應要求補充完整假名，避免在分類或變化表的讀音欄產生武斷答案。
 
 推測結果必須醒目標示「推測結果，可能未涵蓋例外，請再查字典」，並顯示已套用的規則或例外。即使命中常見例外規則庫，仍視為推測結果。推測資料不能進入練習題庫。
 
@@ -79,7 +79,7 @@
 
 ## 4. 完整實用變化表
 
-每個動詞需提供以下 14 種形式：
+每個動詞的詳細頁需列出以下 14 種形式：
 
 1. 辭書形
 2. `ます形`
@@ -97,6 +97,8 @@
 14. 使役被動形
 
 每個形式應有繁中名稱、簡短用途說明與產生結果。標準形式置於主欄位，口語形式只放在備註區。
+
+部分動詞在語意或實際用法上不適合機械式套用所有形式。例如 `ある` 的否定是 `ない`，但可能形不應直接依一般五段規則顯示。此時欄位仍保留，但要顯示「通常不使用」或附上說明，不能硬湊出誤導初學者的答案。
 
 ## 5. 動詞資料集
 
@@ -143,22 +145,34 @@ type VerbFormId =
   | "causative"
   | "causativePassive";
 
+type VerbFormStatus = "standard" | "uncommon" | "not-applicable";
+type SourceRefId = string;
+
+type VerbFormOverride = {
+  surface: string | null;
+  reading: string | null;
+  status: VerbFormStatus;
+  note?: string;
+};
+
 type VerbEntry = {
   id: string;
   dictionaryForm: string;
   reading: string;
   meanings: string[];
   group: VerbGroup;
+  isException: boolean;
   tags: string[];
   frequencyTier: "core" | "common";
   jlptLevel: JlptLevel;
   jlptLevelType: "reference";
   notes: string[];
-  overrides?: Partial<Record<VerbFormId, string>>;
+  sourceRefs: SourceRefId[];
+  overrides?: Partial<Record<VerbFormId, VerbFormOverride>>;
 };
 ```
 
-`id` 必須穩定且唯一。少數例外由 `overrides` 明確覆寫，例如 `行く` 的 `て形` 與 `た形`。
+`id` 必須穩定且唯一。`sourceRefs` 用來追溯人工整理時參考的教材或資料來源。少數例外由 `overrides` 明確覆寫，例如 `行く` 的 `て形` 與 `た形`。`overrides` 也可以將不適合初學者直接套用的形式標成 `uncommon` 或 `not-applicable`。
 
 額外建立輕量的推測例外資料：
 
@@ -167,7 +181,7 @@ type InferenceLexiconEntry = {
   dictionaryForm: string;
   reading: string;
   group: VerbGroup;
-  overrides?: Partial<Record<VerbFormId, string>>;
+  overrides?: Partial<Record<VerbFormId, VerbFormOverride>>;
   notes: string[];
   sourceRefs: string[];
 };
@@ -247,7 +261,7 @@ src/
 - 無法識別的陌生日文輸入：提示目前只能推測辭書形。
 - 推測可能遇到 `る` 結尾例外：顯示額外警告。
 - 假名輸入有多個合理候選：列出候選，不自動選擇。
-- 未知漢字動詞缺少必要讀音：要求使用者補充假名。
+- 未收錄的漢字動詞缺少完整讀音：要求使用者補充假名。
 - 缺少規則或資料覆寫：開發環境中拋出明確錯誤，避免靜默顯示錯誤答案。
 
 ## 9. 測試策略
@@ -258,19 +272,21 @@ src/
 - 五段動詞各種字尾。
 - `行く`、`帰る`、`来る`、`する` 與 `名詞 + する` 等例外。
 - `ある` 與常見敬語動詞的特殊活用。
+- 不適用或不常用形式不會被機械規則硬湊成答案。
 - 漢字、假名、繁體中文搜尋。
 - 常見例外規則庫優先於一般規則。
 - 推測成功、警告、歧義候選與拒絕推測的狀態。
-- 未知漢字 `る` 結尾動詞缺少讀音時，不產生武斷答案。
+- 未收錄的漢字動詞缺少讀音時，不產生武斷答案。
 - 練習題只能使用人工確認資料。
 
 ### 9.2 資料驗證
 
 - 每筆動詞具有唯一 `id`。
 - 必填欄位完整。
+- 每筆人工確認動詞都有可追溯來源。
 - `jlptLevelType` 固定為 `reference`。
 - `overrides` 只能使用支援的形式。
-- 每個人工確認動詞都能產生 14 種形式。
+- 每個人工確認動詞都能列出 14 種形式；不適用或不常用形式具有明確狀態與說明。
 - 第一批資料筆數約為 100 筆，並涵蓋三類動詞與常見例外。
 - 每筆推測例外資料都有核對來源。
 
