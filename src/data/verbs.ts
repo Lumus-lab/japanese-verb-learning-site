@@ -1,4 +1,5 @@
 import type { VerbEntry } from "../domain/types";
+import type { SourceRefId } from "./sourceRefs";
 
 const COMMON_SOURCE_REFS = [
   "irodori-about",
@@ -7,7 +8,7 @@ const COMMON_SOURCE_REFS = [
   "marugoto-a2-2",
   "bccwj",
   "jlpt-guide",
-];
+] satisfies SourceRefId[];
 
 const overrides = {
   iku: {
