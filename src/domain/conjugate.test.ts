@@ -66,6 +66,26 @@ describe("conjugate", () => {
     expectForm(table, "passive", "買われる", "かわれる");
   });
 
+  it.each([
+    ["買う", "かう", "買って", "かって", "買った", "かった"],
+    ["書く", "かく", "書いて", "かいて", "書いた", "かいた"],
+    ["泳ぐ", "およぐ", "泳いで", "およいで", "泳いだ", "およいだ"],
+    ["話す", "はなす", "話して", "はなして", "話した", "はなした"],
+    ["待つ", "まつ", "待って", "まって", "待った", "まった"],
+    ["死ぬ", "しぬ", "死んで", "しんで", "死んだ", "しんだ"],
+    ["遊ぶ", "あそぶ", "遊んで", "あそんで", "遊んだ", "あそんだ"],
+    ["読む", "よむ", "読んで", "よんで", "読んだ", "よんだ"],
+    ["帰る", "かえる", "帰って", "かえって", "帰った", "かえった"],
+  ])(
+    "generates godan te and ta forms for %s",
+    (dictionaryForm, reading, teSurface, teReading, taSurface, taReading) => {
+      const table = conjugate(entry(dictionaryForm, reading, "godan"));
+
+      expectForm(table, "te", teSurface, teReading);
+      expectForm(table, "ta", taSurface, taReading);
+    },
+  );
+
   it("generates the complete ichidan table with standard られる forms", () => {
     const table = conjugate(entry("食べる", "たべる", "ichidan"));
 
@@ -130,6 +150,18 @@ describe("conjugate", () => {
   it("rejects unsupported godan reading tails", () => {
     expect(() => conjugate(entry("問ふ", "とうふ", "godan"))).toThrow(
       'Unsupported godan reading tail "ふ" for 問ふ',
+    );
+  });
+
+  it("rejects mismatched godan surface and reading tails", () => {
+    expect(() => conjugate(entry("書ぐ", "かく", "godan"))).toThrow(
+      "Godan surface/reading tail mismatch: 書ぐ/かく",
+    );
+  });
+
+  it("rejects ichidan verbs without る endings", () => {
+    expect(() => conjugate(entry("書く", "かく", "ichidan"))).toThrow(
+      'Invalid ichidan ending: expected dictionaryForm and reading to end with "る", received 書く/かく',
     );
   });
 });

@@ -39,12 +39,19 @@ function generateGodan({
   dictionaryForm,
   reading,
 }: ConjugatableVerb): ConjugationTable {
+  const surfaceTail = dictionaryForm.slice(-1);
   const readingTail = reading.slice(-1);
   const row = GODAN_ROWS[readingTail];
 
   if (!row) {
     throw new Error(
       `Unsupported godan reading tail "${readingTail}" for ${dictionaryForm}`,
+    );
+  }
+
+  if (surfaceTail !== readingTail) {
+    throw new Error(
+      `Godan surface/reading tail mismatch: ${dictionaryForm}/${reading}`,
     );
   }
 
@@ -75,6 +82,12 @@ function generateIchidan({
   dictionaryForm,
   reading,
 }: ConjugatableVerb): ConjugationTable {
+  if (!dictionaryForm.endsWith("る") || !reading.endsWith("る")) {
+    throw new Error(
+      `Invalid ichidan ending: expected dictionaryForm and reading to end with "る", received ${dictionaryForm}/${reading}`,
+    );
+  }
+
   const surfaceStem = dictionaryForm.slice(0, -1);
   const readingStem = reading.slice(0, -1);
   const form = (ending: string) =>
@@ -178,8 +191,9 @@ export function conjugate(verb: ConjugatableVerb): ConjugationTable {
         ? generateIchidan(verb)
         : generateIrregular(verb);
 
-  return FORM_DEFINITIONS.reduce<ConjugationTable>((table, { id }) => {
-    table[id] = verb.overrides?.[id] ?? generated[id];
-    return table;
-  }, {} as ConjugationTable);
+  const table = { ...generated };
+  for (const { id } of FORM_DEFINITIONS) {
+    table[id] = verb.overrides?.[id] ?? table[id];
+  }
+  return table;
 }
