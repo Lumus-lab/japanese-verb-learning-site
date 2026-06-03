@@ -9,6 +9,8 @@ import type {
 } from "./types";
 
 const WARNING = "推測結果，可能未涵蓋例外，請再查字典。";
+const READING_TAIL_MISMATCH_MESSAGE =
+  "補充的假名和辭書形字尾不一致，請確認讀音。";
 const GODAN_TAILS = new Set(["う", "く", "ぐ", "す", "つ", "ぬ", "ぶ", "む"]);
 const I_E_KANA = new Set(
   "いきしちにひみりぎじぢびぴえけせてねへめれげぜでべぺ".split(""),
@@ -53,12 +55,26 @@ const unsupported = (message: string): InferenceResult => ({
   candidates: [],
 });
 
+const heuristic = (value: CandidateSource): InferenceResult => {
+  try {
+    return {
+      status: "heuristic",
+      warning: WARNING,
+      candidates: [candidateFrom(value)],
+    };
+  } catch {
+    return unsupported(READING_TAIL_MISMATCH_MESSAGE);
+  }
+};
+
 export const inferVerb = (
   input: string,
   suppliedReading?: string,
 ): InferenceResult => {
   const dictionaryForm = input.trim();
-  const reading = suppliedReading?.trim() || dictionaryForm;
+  const normalizedReading = suppliedReading?.trim() ?? "";
+  const hasSuppliedReading = normalizedReading.length > 0;
+  const reading = hasSuppliedReading ? normalizedReading : dictionaryForm;
 
   const knownMatches = VERBS.filter(
     (verb) =>
@@ -102,38 +118,34 @@ export const inferVerb = (
     return unsupported("目前只能推測日文動詞的辭書形。");
   }
 
-  if (hasKanji(dictionaryForm) && !suppliedReading) {
+  if (hasKanji(dictionaryForm) && !hasSuppliedReading) {
     return unsupported(
       "這個未收錄動詞需要補充完整假名，才能產生可靠的推測讀音。",
     );
   }
 
   if (dictionaryForm.endsWith("する")) {
-    return {
-      status: "heuristic",
-      warning: WARNING,
-      candidates: [
-        candidateFrom({ dictionaryForm, reading, group: "irregular" }),
-      ],
-    };
+    if (!reading.endsWith("する")) {
+      return unsupported(READING_TAIL_MISMATCH_MESSAGE);
+    }
+
+    return heuristic({ dictionaryForm, reading, group: "irregular" });
   }
 
   if (dictionaryForm === "来る" || reading === "くる") {
-    return {
-      status: "heuristic",
-      warning: WARNING,
-      candidates: [
-        candidateFrom({
-          dictionaryForm: "来る",
-          reading: "くる",
-          group: "irregular",
-        }),
-      ],
-    };
+    return heuristic({
+      dictionaryForm: "来る",
+      reading: "くる",
+      group: "irregular",
+    });
   }
 
   const tail = reading.slice(-1);
   const previous = reading.slice(-2, -1);
+  if (hasSuppliedReading && dictionaryTail !== tail) {
+    return unsupported(READING_TAIL_MISMATCH_MESSAGE);
+  }
+
   if (!GODAN_TAILS.has(tail) && tail !== "る") {
     return unsupported("目前只能推測日文動詞的辭書形。");
   }
@@ -149,9 +161,5 @@ export const inferVerb = (
       ? ["「る」前面的音位於い段或え段，因此暫時依一段動詞推測。"]
       : ["依辭書形字尾暫時套用五段動詞規則。"];
 
-  return {
-    status: "heuristic",
-    warning: WARNING,
-    candidates: [candidateFrom({ dictionaryForm, reading, group, notes })],
-  };
+  return heuristic({ dictionaryForm, reading, group, notes });
 };

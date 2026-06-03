@@ -40,11 +40,51 @@ describe("inferVerb", () => {
     expect(result.message).toContain("假名");
   });
 
+  it("treats a blank supplied reading as missing for unknown kanji verbs", () => {
+    const result = inferVerb("覆る", "   ");
+
+    expect(result.status).toBe("unsupported");
+    expect(result.message).toContain("假名");
+    expect(result.candidates).toEqual([]);
+  });
+
   it("uses a supplied reading for an unknown kanji verb", () => {
     const result = inferVerb("混ぜる", "まぜる");
 
     expect(result.status).toBe("heuristic");
     expect(result.candidates[0].forms.masu.reading).toBe("まぜます");
+  });
+
+  it("does not throw when the supplied godan reading tail mismatches", () => {
+    let result: ReturnType<typeof inferVerb> | undefined;
+
+    expect(() => {
+      result = inferVerb("描く", "えがぐ");
+    }).not.toThrow();
+    expect(result?.status).toBe("unsupported");
+    expect(result?.message).toBe(
+      "補充的假名和辭書形字尾不一致，請確認讀音。",
+    );
+  });
+
+  it("uses a compatible supplied godan reading for an unknown kanji verb", () => {
+    const result = inferVerb("描く", "えがく");
+
+    expect(result.status).toBe("heuristic");
+    expect(result.candidates[0].forms.masu).toEqual({
+      surface: "描きます",
+      reading: "えがきます",
+      status: "standard",
+    });
+  });
+
+  it("does not throw for an incomplete supplied する reading", () => {
+    let result: ReturnType<typeof inferVerb> | undefined;
+
+    expect(() => {
+      result = inferVerb("架空語する", "かくうごす");
+    }).not.toThrow();
+    expect(result?.status).toBe("unsupported");
   });
 
   it("does not treat an unmatched Chinese query as a Japanese verb", () => {
