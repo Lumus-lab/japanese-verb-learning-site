@@ -38,6 +38,25 @@ describe("validateData", () => {
     expect(VERBS).toHaveLength(100);
   });
 
+  it("tracks common inference exceptions with sources", () => {
+    expect(INFERENCE_LEXICON.map((entry) => entry.dictionaryForm)).toEqual(
+      expect.arrayContaining([
+        "行く",
+        "ある",
+        "帰る",
+        "切る",
+        "要る",
+        "くださる",
+        "なさる",
+        "いらっしゃる",
+        "おっしゃる",
+      ]),
+    );
+    expect(INFERENCE_LEXICON.every((entry) => entry.sourceRefs.length > 0)).toBe(
+      true,
+    );
+  });
+
   it("covers all three groups and every godan ending", () => {
     expect(new Set(VERBS.map((verb) => verb.group))).toEqual(
       new Set(["godan", "ichidan", "irregular"]),
