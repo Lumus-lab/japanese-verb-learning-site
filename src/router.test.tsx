@@ -33,4 +33,47 @@ describe('router', () => {
       '?q=%E9%A3%9F%E3%81%B9%E3%82%8B',
     )
   })
+
+  it('renders a confirmed verb with a complete form table', () => {
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, {
+          initialEntries: ['/lookup?q=食べる'],
+        })}
+      />,
+    )
+
+    expect(screen.getByText('已核對資料')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '食べる' })).toBeInTheDocument()
+    expect(screen.getAllByText('食べられる').length).toBeGreaterThan(0)
+  })
+
+  it('keeps a visible warning on inferred results', () => {
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, {
+          initialEntries: ['/lookup?q=まぜる'],
+        })}
+      />,
+    )
+
+    expect(screen.getByText('規則推測')).toBeInTheDocument()
+    expect(
+      screen.getByText('推測結果，可能未涵蓋例外，請再查字典。'),
+    ).toBeInTheDocument()
+  })
+
+  it('asks for kana before inferring an unrecorded kanji verb', async () => {
+    const user = userEvent.setup()
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/lookup?q=混ぜる'],
+    })
+    render(<RouterProvider router={router} />)
+
+    await user.type(screen.getByRole('textbox', { name: '補充完整假名' }), 'まぜる')
+    await user.click(screen.getByRole('button', { name: '使用假名推測' }))
+
+    expect(router.state.location.search).toContain('reading=')
+    expect(await screen.findByText('混ぜます')).toBeInTheDocument()
+  })
 })
