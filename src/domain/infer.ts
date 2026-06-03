@@ -132,7 +132,7 @@ export const inferVerb = (
     return heuristic({ dictionaryForm, reading, group: "irregular" });
   }
 
-  if (dictionaryForm === "来る" || reading === "くる") {
+  if (dictionaryForm === "来る") {
     return heuristic({
       dictionaryForm: "来る",
       reading: "くる",

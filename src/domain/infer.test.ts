@@ -78,6 +78,36 @@ describe("inferVerb", () => {
     });
   });
 
+  it("does not rewrite unknown godan る verbs with くる readings to 来る", () => {
+    const result = inferVerb("繰る", "くる");
+
+    expect(result.status).toBe("heuristic");
+    expect(result.candidates[0].dictionaryForm).toBe("繰る");
+    expect(result.candidates[0].group).toBe("godan");
+    expect(result.candidates[0].forms.masu).toEqual({
+      surface: "繰ります",
+      reading: "くります",
+      status: "standard",
+    });
+  });
+
+  it("does not let a supplied くる reading bypass tail mismatch checks", () => {
+    const result = inferVerb("架空く", "くる");
+
+    expect(result.status).toBe("unsupported");
+    expect(result.message).toBe(
+      "補充的假名和辭書形字尾不一致，請確認讀音。",
+    );
+  });
+
+  it("keeps confirmed 来る inference irregular", () => {
+    const result = inferVerb("来る", "くる");
+
+    expect(result.status).toBe("lexicon-assisted");
+    expect(result.candidates[0].group).toBe("irregular");
+    expect(result.candidates[0].forms.masu.reading).toBe("きます");
+  });
+
   it("does not throw for an incomplete supplied する reading", () => {
     let result: ReturnType<typeof inferVerb> | undefined;
 
