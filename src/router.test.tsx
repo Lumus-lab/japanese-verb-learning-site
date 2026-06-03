@@ -76,4 +76,47 @@ describe('router', () => {
     expect(router.state.location.search).toContain('reading=')
     expect(await screen.findByText('混ぜます')).toBeInTheDocument()
   })
+
+  it('shows the beginner rule sections', () => {
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, { initialEntries: ['/guide'] })}
+      />,
+    )
+
+    expect(
+      screen.getByRole('heading', { name: '先分類，再變化' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'て形與た形的音便' }),
+    ).toBeInTheDocument()
+  })
+
+  it('filters the dictionary by group', async () => {
+    const user = userEvent.setup()
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, { initialEntries: ['/dictionary'] })}
+      />,
+    )
+
+    await user.selectOptions(screen.getByLabelText('動詞分類'), 'irregular')
+
+    expect(screen.getByText('勉強する')).toBeInTheDocument()
+    expect(screen.queryByText('食べる')).not.toBeInTheDocument()
+  })
+
+  it('filters the dictionary to known exceptions', async () => {
+    const user = userEvent.setup()
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, { initialEntries: ['/dictionary'] })}
+      />,
+    )
+
+    await user.click(screen.getByRole('checkbox', { name: '只顯示常見例外' }))
+
+    expect(screen.getByText('行く')).toBeInTheDocument()
+    expect(screen.queryByText('食べる')).not.toBeInTheDocument()
+  })
 })

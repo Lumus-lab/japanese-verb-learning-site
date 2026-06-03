@@ -1,9 +1,10 @@
 import { type FormEvent, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { SearchBox } from '../components/SearchBox'
 import { StatusBadge } from '../components/StatusBadge'
 import { VerbDetail } from '../components/VerbDetail'
+import { VERBS } from '../data/verbs'
 import { inferVerb } from '../domain/infer'
 import { searchVerbs } from '../domain/search'
 
@@ -114,6 +115,27 @@ export function LookupPage() {
       />
       <p className="warning">{inferred.warning}</p>
       <VerbDetail verb={{ ...candidate, meanings: [] }} />
+    </>
+  )
+}
+
+export function VerbPage() {
+  const { verbId } = useParams()
+  const verb = VERBS.find((entry) => entry.id === verbId)
+
+  if (!verb) {
+    return (
+      <>
+        <h1>找不到這個動詞</h1>
+        <p>請回到動詞字典重新選擇。</p>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <StatusBadge kind="confirmed" />
+      <VerbDetail verb={verb} />
     </>
   )
 }
