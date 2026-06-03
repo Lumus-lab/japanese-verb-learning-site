@@ -13,5 +13,6 @@ describe('App', () => {
     expect(
       screen.getByText('規則、查詢與練習都從同一套已核對資料出發。'),
     ).toBeInTheDocument()
+    expect(screen.getByText('100 個已核對常用動詞')).toBeInTheDocument()
   })
 })
