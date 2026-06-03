@@ -142,4 +142,62 @@ describe("validateData", () => {
       validateData([], [inferenceEntry({ sourceRefs: ["__proto__"] })]),
     ).toEqual(["unknown inference source: する:__proto__"]);
   });
+
+  it("rejects inference entries with unsupported conjugation endings", () => {
+    expect(
+      validateData(
+        [],
+        [
+          inferenceEntry({
+            dictionaryForm: "問ふ",
+            reading: "とうふ",
+            group: "godan",
+          }),
+        ],
+      ),
+    ).toEqual([
+      'inference conjugation error: 問ふ: Unsupported godan reading tail "ふ" for 問ふ',
+    ]);
+  });
+
+  it("rejects polluted not-applicable inference overrides", () => {
+    expect(
+      validateData(
+        [],
+        [
+          inferenceEntry({
+            dictionaryForm: "ある",
+            reading: "ある",
+            group: "godan",
+            overrides: {
+              potential: {
+                surface: "できる",
+                reading: "できる",
+                status: "not-applicable",
+              },
+            } as unknown as InferenceLexiconEntry["overrides"],
+          }),
+        ],
+      ),
+    ).toEqual(["invalid inference form value: ある:potential"]);
+  });
+
+  it("rejects inference entries with missing required fields", () => {
+    expect(
+      validateData([], [inferenceEntry({ dictionaryForm: "読む", reading: "" })]),
+    ).toEqual(["missing inference required field: 読む"]);
+  });
+
+  it("rejects unsupported inference groups", () => {
+    expect(
+      validateData(
+        [],
+        [
+          inferenceEntry({
+            group: "unsupported" as unknown as InferenceLexiconEntry["group"],
+          }),
+        ],
+      ),
+    ).toEqual(["invalid inference group: する:unsupported"]);
+  });
 });

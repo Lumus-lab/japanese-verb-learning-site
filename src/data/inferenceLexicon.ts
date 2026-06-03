@@ -1,7 +1,8 @@
 import type { InferenceLexiconEntry } from "../domain/types";
+import type { SourceRefId } from "./sourceRefs";
 
-const GODAN_RU_SOURCE = ["jpf-te-form", "jmdict"];
-const HONORIFIC_SOURCE = ["jpf-honorific", "jmdict"];
+const GODAN_RU_SOURCE = ["jpf-te-form", "jmdict"] satisfies SourceRefId[];
+const HONORIFIC_SOURCE = ["jpf-honorific", "jmdict"] satisfies SourceRefId[];
 
 export const INFERENCE_LEXICON: InferenceLexiconEntry[] = [
   {
@@ -68,7 +69,7 @@ export const INFERENCE_LEXICON: InferenceLexiconEntry[] = [
     reading,
     group: "godan" as const,
     notes: ["「-いる / -える」で終わりますが、五段動詞です。"],
-    sourceRefs: GODAN_RU_SOURCE,
+    sourceRefs: [...GODAN_RU_SOURCE],
   })),
   {
     dictionaryForm: "くださる",
@@ -83,7 +84,7 @@ export const INFERENCE_LEXICON: InferenceLexiconEntry[] = [
       imperative: { surface: "ください", reading: "ください", status: "standard" },
     },
     notes: ["尊敬語として使われる特殊な五段動詞です。"],
-    sourceRefs: HONORIFIC_SOURCE,
+    sourceRefs: [...HONORIFIC_SOURCE],
   },
   {
     dictionaryForm: "なさる",
@@ -94,7 +95,7 @@ export const INFERENCE_LEXICON: InferenceLexiconEntry[] = [
       imperative: { surface: "なさい", reading: "なさい", status: "standard" },
     },
     notes: ["尊敬語として使われる特殊な五段動詞です。"],
-    sourceRefs: HONORIFIC_SOURCE,
+    sourceRefs: [...HONORIFIC_SOURCE],
   },
   {
     dictionaryForm: "いらっしゃる",
@@ -113,7 +114,7 @@ export const INFERENCE_LEXICON: InferenceLexiconEntry[] = [
       },
     },
     notes: ["尊敬語として使われる特殊な五段動詞です。"],
-    sourceRefs: HONORIFIC_SOURCE,
+    sourceRefs: [...HONORIFIC_SOURCE],
   },
   {
     dictionaryForm: "おっしゃる",
@@ -132,6 +133,6 @@ export const INFERENCE_LEXICON: InferenceLexiconEntry[] = [
       },
     },
     notes: ["尊敬語として使われる特殊な五段動詞です。"],
-    sourceRefs: HONORIFIC_SOURCE,
+    sourceRefs: [...HONORIFIC_SOURCE],
   },
 ];
