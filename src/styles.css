@@ -1,27 +1,281 @@
 :root {
-  font-family:
-    Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #1f2937;
-  background: #f8fafc;
+  color: #172033;
+  background: #f6f8fc;
+  font-family: Inter, "Noto Sans TC", "Noto Sans JP", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
 }
 
-.app-shell {
-  max-width: 64rem;
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.content {
+  width: min(72rem, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 4rem 1.5rem;
 }
 
-h1 {
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  color: white;
+  background: #20242c;
+  box-shadow: 0 1px 12px #0f172a22;
+}
+
+.header-inner,
+nav,
+.brand,
+.search-box,
+.filter-bar,
+.reading-prompt {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.header-inner {
+  justify-content: space-between;
+  min-height: 4.5rem;
+}
+
+nav a {
+  padding: 0.45rem 0.55rem;
+  color: #d8dee9;
+}
+
+nav a.active {
+  color: white;
+  border-bottom: 2px solid #14b8a6;
+}
+
+.brand {
+  font-weight: 800;
+}
+
+.page-content {
+  padding: 3rem 0 5rem;
+}
+
+.hero {
+  max-width: 52rem;
+  padding: 3rem 0;
+}
+
+.hero h1,
+.page-heading h1,
+.verb-detail h1 {
+  margin: 0.25rem 0 0.75rem;
+  color: #111827;
+  font-size: 3rem;
+  line-height: 1.08;
+}
+
+.eyebrow {
+  color: #0f766e;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.muted,
+.reading {
+  color: #64748b;
+}
+
+.search-box {
+  margin: 1.5rem 0 0.8rem;
+  padding: 0.65rem;
+  background: white;
+  border: 1px solid #dbe2ee;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px #33415512;
+}
+
+.search-box input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+}
+
+button,
+.search-box button {
+  cursor: pointer;
+  color: white;
+  font-weight: 700;
+  background: #0f766e;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.feature-grid,
+.verb-grid,
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+}
+
+.feature-card,
+.verb-card,
+.guide-card,
+.form-card,
+.practice-card {
+  padding: 1.1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px #3341550d;
+}
+
+.feature-card,
+.verb-card {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.guide-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.filter-bar {
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.filter-bar input,
+.filter-bar select,
+.reading-prompt input {
+  min-height: 2.7rem;
+  padding: 0.55rem 0.7rem;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.reading-prompt {
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.reading-prompt label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.status-badge.confirmed {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-badge.assisted {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status-badge.heuristic {
+  color: #9a3412;
+  background: #ffedd5;
+}
+
+.warning,
+.note {
+  color: #9a3412;
+}
+
+.verb-detail header {
+  margin: 1rem 0 1.4rem;
+}
+
+.form-card {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.form-card h2,
+.form-card p {
   margin: 0;
-  font-size: clamp(2rem, 6vw, 3.5rem);
 }
 
-p {
+.form-card.not-applicable {
+  background: #fff7ed;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.7rem;
+  margin: 1rem 0;
+}
+
+.feedback {
   margin-top: 1rem;
-  color: #475569;
-  font-size: 1.125rem;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.feedback.correct {
+  background: #dcfce7;
+}
+
+.feedback.incorrect {
+  background: #fee2e2;
+}
+
+@media (max-width: 44rem) {
+  .header-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0.8rem 0;
+  }
+
+  nav {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .page-content {
+    padding-top: 2rem;
+  }
+
+  .hero h1,
+  .page-heading h1,
+  .verb-detail h1 {
+    font-size: 2.25rem;
+  }
+
+  .search-box {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
