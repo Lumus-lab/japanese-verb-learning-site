@@ -5,6 +5,7 @@ import { DictionaryPage } from './pages/DictionaryPage'
 import { GuidePage } from './pages/GuidePage'
 import { HomePage } from './pages/HomePage'
 import { LookupPage, VerbPage } from './pages/LookupPage'
+import { PracticePage } from './pages/PracticePage'
 
 const StubPage = ({ title }: { title: string }) => <h1>{title}</h1>
 
@@ -17,7 +18,7 @@ export const routes: RouteObject[] = [
       { path: '/dictionary', element: <DictionaryPage /> },
       { path: '/lookup', element: <LookupPage /> },
       { path: '/verbs/:verbId', element: <VerbPage /> },
-      { path: '/practice', element: <StubPage title="快速練習" /> },
+      { path: '/practice', element: <PracticePage /> },
     ],
   },
 ]

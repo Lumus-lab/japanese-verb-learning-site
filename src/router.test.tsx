@@ -119,4 +119,25 @@ describe('router', () => {
     expect(screen.getByText('行く')).toBeInTheDocument()
     expect(screen.queryByText('食べる')).not.toBeInTheDocument()
   })
+
+  it('shows immediate feedback after answering a practice question', async () => {
+    const user = userEvent.setup()
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, { initialEntries: ['/practice'] })}
+      />,
+    )
+
+    expect(
+      screen.getByRole('heading', { name: '快速練習' }),
+    ).toBeInTheDocument()
+    await user.click(
+      screen.getAllByRole('button', {
+        name: /五段動詞|一段動詞|不規則動詞|.+/,
+      })[0],
+    )
+
+    expect(screen.getByText(/正確答案/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '下一題' })).toBeInTheDocument()
+  })
 })
