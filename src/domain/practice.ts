@@ -1,15 +1,27 @@
 import { FORM_DEFINITIONS } from '../data/forms'
 import { VERBS } from '../data/verbs'
 import { conjugate } from './conjugate'
+import type { VerbFormId } from './types'
 
-export type PracticeQuestion = {
-  kind: 'group' | 'form'
+type PracticeQuestionBase = {
   prompt: string
   options: string[]
   answer: string
   explanation: string
   source: 'confirmed'
+  verbId: string
 }
+
+export type PracticeQuestion =
+  | (PracticeQuestionBase & {
+      kind: 'group'
+    })
+  | (PracticeQuestionBase & {
+      kind: 'form'
+      formId: VerbFormId
+    })
+
+export type PracticeMode = PracticeQuestion['kind'] | 'mixed'
 
 const groupLabels = {
   godan: '五段動詞',
@@ -29,10 +41,15 @@ const unique = (items: string[]) => [...new Set(items)]
 
 export const buildPracticeQuestion = (
   random: () => number = Math.random,
-  requestedKind?: PracticeQuestion['kind'],
+  requestedMode: PracticeMode = 'mixed',
 ): PracticeQuestion => {
   const verb = pick(VERBS, random)
-  const kind = requestedKind ?? (random() < 0.5 ? 'group' : 'form')
+  const kind =
+    requestedMode === 'mixed'
+      ? random() < 0.5
+        ? 'group'
+        : 'form'
+      : requestedMode
 
   if (kind === 'group') {
     const answer = groupLabels[verb.group]
@@ -44,22 +61,28 @@ export const buildPracticeQuestion = (
       answer,
       explanation: `${verb.dictionaryForm} 是${answer}。`,
       source: 'confirmed',
+      verbId: verb.id,
     }
   }
 
-  const availableForms = FORM_DEFINITIONS.filter(
-    (form) => !['dictionary', 'prohibitive'].includes(form.id),
-  ).filter((form) => conjugate(verb)[form.id].status !== 'not-applicable')
+  const forms = conjugate(verb)
+  const availableForms = FORM_DEFINITIONS.filter((form) => {
+    const value = forms[form.id]
+    return value.status !== 'not-applicable' && Boolean(value.surface)
+  })
   const form = pick(availableForms, random)
-  const answer = conjugate(verb)[form.id].surface!
+  const answer = forms[form.id].surface!
   const distractors = unique(
-    VERBS.flatMap((entry) => {
-      const candidate = conjugate(entry)[form.id]
-      return candidate.status === 'not-applicable' || !candidate.surface
-        ? []
-        : [candidate.surface]
-    }).filter((value) => value !== answer),
+    availableForms
+      .map((definition) => forms[definition.id].surface!)
+      .filter((value) => value !== answer),
   ).slice(0, 3)
+
+  if (distractors.length < 3) {
+    throw new Error(
+      `Not enough same-verb form options for ${verb.dictionaryForm}`,
+    )
+  }
 
   return {
     kind,
@@ -68,5 +91,7 @@ export const buildPracticeQuestion = (
     answer,
     explanation: `${verb.dictionaryForm} 的${form.label}是 ${answer}。`,
     source: 'confirmed',
+    verbId: verb.id,
+    formId: form.id,
   }
 }

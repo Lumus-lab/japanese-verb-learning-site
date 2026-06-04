@@ -1,5 +1,10 @@
 import { type FormEvent, useState } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { SearchBox } from '../components/SearchBox'
 import { StatusBadge } from '../components/StatusBadge'
@@ -121,7 +126,8 @@ export function LookupPage() {
 
 export function VerbPage() {
   const { verbId } = useParams()
-  const verb = VERBS.find((entry) => entry.id === verbId)
+  const verbIndex = VERBS.findIndex((entry) => entry.id === verbId)
+  const verb = verbIndex >= 0 ? VERBS[verbIndex] : undefined
 
   if (!verb) {
     return (
@@ -132,9 +138,35 @@ export function VerbPage() {
     )
   }
 
+  const previousVerb = VERBS[verbIndex - 1]
+  const nextVerb = VERBS[verbIndex + 1]
+
   return (
     <>
       <StatusBadge kind="confirmed" />
+      <p className="sequence-position">
+        {verbIndex + 1} / {VERBS.length}
+      </p>
+      <nav className="verb-sequence-nav" aria-label="動詞詳情導覽">
+        {previousVerb && (
+          <Link
+            aria-label={`上一個 ${previousVerb.dictionaryForm}`}
+            className="sequence-arrow previous"
+            to={`/verbs/${previousVerb.id}`}
+          >
+            ←
+          </Link>
+        )}
+        {nextVerb && (
+          <Link
+            aria-label={`下一個 ${nextVerb.dictionaryForm}`}
+            className="sequence-arrow next"
+            to={`/verbs/${nextVerb.id}`}
+          >
+            →
+          </Link>
+        )}
+      </nav>
       <VerbDetail verb={verb} />
     </>
   )
