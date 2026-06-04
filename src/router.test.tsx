@@ -90,6 +90,22 @@ describe('router', () => {
     expect(
       screen.getByRole('heading', { name: 'て形與た形的音便' }),
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '判斷動詞分類的步驟' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '五段動詞變化表' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '一段動詞變化表' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '不規則動詞變化表' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '常見 る 結尾五段例外' }),
+    ).toBeInTheDocument()
+    expect(screen.getAllByText(/帰る（かえる）/).length).toBeGreaterThan(0)
   })
 
   it('filters the dictionary by group', async () => {
@@ -120,6 +136,33 @@ describe('router', () => {
     expect(screen.queryByText('食べる')).not.toBeInTheDocument()
   })
 
+  it('navigates between confirmed verb detail pages', async () => {
+    const user = userEvent.setup()
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/verbs/kaeru'],
+    })
+    render(<RouterProvider router={router} />)
+
+    expect(screen.getByRole('heading', { name: '帰る' })).toBeInTheDocument()
+    expect(screen.getByText('6 / 100')).toBeInTheDocument()
+
+    const nextLink = screen.getByRole('link', { name: '下一個 食べる' })
+    expect(nextLink).toHaveTextContent('→')
+
+    await user.click(nextLink)
+
+    expect(router.state.location.pathname).toBe('/verbs/taberu')
+    expect(screen.getByRole('heading', { name: '食べる' })).toBeInTheDocument()
+    expect(screen.getByText('7 / 100')).toBeInTheDocument()
+
+    const previousLink = screen.getByRole('link', { name: '上一個 帰る' })
+    expect(previousLink).toHaveTextContent('←')
+
+    await user.click(previousLink)
+
+    expect(router.state.location.pathname).toBe('/verbs/kaeru')
+  })
+
   it('shows immediate feedback after answering a practice question', async () => {
     const user = userEvent.setup()
     render(
@@ -131,13 +174,37 @@ describe('router', () => {
     expect(
       screen.getByRole('heading', { name: '快速練習' }),
     ).toBeInTheDocument()
-    await user.click(
-      screen.getAllByRole('button', {
-        name: /五段動詞|一段動詞|不規則動詞|.+/,
-      })[0],
-    )
+    const answerButtons = screen
+      .getAllByRole('button')
+      .filter((button) => button.closest('.option-grid'))
+    await user.click(answerButtons[0])
 
     expect(screen.getByText(/正確答案/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '下一題' })).toBeInTheDocument()
+  })
+
+  it('lets learners choose a practice mode', async () => {
+    const user = userEvent.setup()
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, { initialEntries: ['/practice'] })}
+      />,
+    )
+
+    expect(screen.getByRole('group', { name: '練習模式' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '變化形' }))
+
+    expect(screen.getByRole('button', { name: '變化形' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+
+    await user.click(screen.getByRole('button', { name: '動詞分類' }))
+
+    expect(screen.getByRole('button', { name: '動詞分類' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
   })
 })
