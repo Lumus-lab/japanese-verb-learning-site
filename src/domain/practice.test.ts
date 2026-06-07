@@ -33,6 +33,18 @@ describe('buildPracticeQuestion', () => {
     expect(question.options).toContain(question.answer)
   })
 
+  it('includes the kana reading in form question prompts', () => {
+    const question = buildPracticeQuestion(() => 0.4, 'form')
+
+    expect(question.kind).toBe('form')
+
+    const verb = VERBS.find((entry) => entry.id === question.verbId)
+    expect(verb).toBeDefined()
+    expect(question.prompt).toContain(
+      `${verb!.dictionaryForm}（${verb!.reading}）`,
+    )
+  })
+
   it('builds form question options from the prompted verb only', () => {
     const question = buildPracticeQuestion(() => 0.05, 'form')
 

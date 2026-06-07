@@ -86,7 +86,7 @@ export const buildPracticeQuestion = (
 
   return {
     kind,
-    prompt: `${verb.dictionaryForm} 的${form.label}是哪一個？`,
+    prompt: `${verb.dictionaryForm}（${verb.reading}）的${form.label}是哪一個？`,
     options: rotate([answer, ...distractors], random),
     answer,
     explanation: `${verb.dictionaryForm} 的${form.label}是 ${answer}。`,
