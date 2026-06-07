@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 
+import { FORM_DEFINITIONS } from './data/forms'
 import { routes } from './router'
 
 describe('router', () => {
@@ -206,5 +207,29 @@ describe('router', () => {
       'aria-pressed',
       'true',
     )
+  })
+
+  it('lets learners focus form practice on selected conjugation forms', async () => {
+    const user = userEvent.setup()
+    render(
+      <RouterProvider
+        router={createMemoryRouter(routes, { initialEntries: ['/practice'] })}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: '變化形' }))
+
+    expect(screen.getByRole('group', { name: '練習範圍' })).toBeInTheDocument()
+
+    for (const form of FORM_DEFINITIONS) {
+      if (form.id !== 'te') {
+        await user.click(screen.getByRole('checkbox', { name: form.label }))
+      }
+    }
+
+    expect(screen.getByRole('checkbox', { name: 'て形' })).toBeChecked()
+    expect(
+      screen.getByRole('heading', { name: /的て形是哪一個？/ }),
+    ).toBeInTheDocument()
   })
 })

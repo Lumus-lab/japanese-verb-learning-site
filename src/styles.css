@@ -362,6 +362,41 @@ button:disabled {
   background: #0f766e;
 }
 
+.form-scope-controls {
+  margin: 1rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.form-scope-controls legend {
+  margin-bottom: 0.55rem;
+  color: #172033;
+  font-weight: 800;
+}
+
+.form-scope-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.45rem;
+}
+
+.form-scope-option {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.35rem;
+  padding: 0.45rem 0.6rem;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #dbe2ee;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.form-scope-option input {
+  accent-color: #0f766e;
+}
+
 .feedback {
   margin-top: 1rem;
   padding: 1rem;

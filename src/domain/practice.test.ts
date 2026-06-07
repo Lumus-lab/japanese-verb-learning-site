@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest'
 import { FORM_DEFINITIONS } from '../data/forms'
 import { VERBS } from '../data/verbs'
 import { conjugate } from './conjugate'
-import { buildPracticeQuestion } from './practice'
+import { buildPracticeFormQueue, buildPracticeQuestion } from './practice'
+import type { VerbFormId } from './types'
 
 describe('buildPracticeQuestion', () => {
   it('generates a group question from confirmed data', () => {
@@ -31,6 +32,27 @@ describe('buildPracticeQuestion', () => {
     expect(question.formId).toBeDefined()
     expect(new Set(question.options)).toHaveLength(4)
     expect(question.options).toContain(question.answer)
+  })
+
+  it('can build a form question for a requested form id', () => {
+    const question = buildPracticeQuestion(() => 0.2, 'form', {
+      formId: 'te',
+      formIds: ['te', 'nai'],
+    })
+
+    expect(question.kind).toBe('form')
+    if (question.kind !== 'form') {
+      throw new Error('Expected a form question')
+    }
+    expect(question.formId).toBe('te')
+  })
+
+  it('builds a fair form queue that covers selected forms once per round', () => {
+    const selectedForms: VerbFormId[] = ['te', 'nai', 'ta', 'potential']
+    const queue = buildPracticeFormQueue(selectedForms, () => 0)
+
+    expect(queue).toHaveLength(selectedForms.length)
+    expect(new Set(queue)).toEqual(new Set(selectedForms))
   })
 
   it('includes the kana reading in form question prompts', () => {
