@@ -18,8 +18,8 @@ export function VerbDetail({ verb }: { verb: VerbDetailValue }) {
   return (
     <article className="verb-detail">
       <header>
-        <h1>{verb.dictionaryForm}</h1>
-        <p className="reading">{verb.reading}</p>
+        <h1 lang="ja">{verb.dictionaryForm}</h1>
+        <p className="reading" lang="ja">{verb.reading}</p>
         {verb.meanings.length > 0 && <p>{verb.meanings.join('、')}</p>}
         {verb.notes.length > 0 && (
           <ul className="notes">
@@ -37,9 +37,9 @@ export function VerbDetail({ verb }: { verb: VerbDetailValue }) {
             <section className={`form-card ${form.status}`} key={definition.id}>
               <h2>{definition.label}</h2>
               <p className="muted">{definition.description}</p>
-              <strong>{form.surface ?? '通常不使用'}</strong>
+              <strong lang={form.surface ? 'ja' : undefined}>{form.surface ?? '通常不使用'}</strong>
               {form.reading && form.reading !== form.surface && (
-                <small>{form.reading}</small>
+                <small lang="ja">{form.reading}</small>
               )}
               {form.note && <p className="note">{form.note}</p>}
             </section>

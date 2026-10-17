@@ -1,0 +1,93 @@
+/* Shared Lumus chrome. Use with the versioned tokens.css before site styles. */
+:root {
+  color-scheme: light;
+  color: var(--lx-text);
+  background: var(--lx-canvas);
+  font-family: var(--lx-font-ui);
+  font-size: var(--lx-font-size);
+  line-height: var(--lx-line-height);
+  accent-color: var(--lx-accent);
+  caret-color: var(--lx-accent);
+  scrollbar-color: var(--lx-muted) var(--lx-canvas);
+}
+
+::selection { color: var(--lx-on-accent); background: var(--lx-accent); }
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+a { color: inherit; text-underline-offset: 0.22em; }
+button, input, select, textarea { font: inherit; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--lx-accent);
+  outline-offset: 4px;
+}
+input::placeholder, textarea::placeholder { color: var(--lx-muted); opacity: 1; }
+button, input, select, textarea { border-radius: var(--lx-radius); }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+
+.lx-container { width: min(var(--lx-content-width), calc(100% - 72px)); margin-inline: auto; }
+.lx-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--lx-canvas);
+  border-bottom: var(--lx-rule-width) solid var(--lx-rule);
+}
+.lx-header-inner, .lx-brand-group, .lx-site-nav, .lx-footer-inner {
+  display: flex;
+  align-items: center;
+}
+.lx-header-inner { min-height: 80px; justify-content: space-between; gap: var(--lx-space-3); }
+.lx-brand-group { gap: 20px; flex-shrink: 0; }
+.lx-brand, .lx-site-name, .lx-site-nav a, .lx-footer-inner a { text-decoration: none; }
+.lx-brand { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+.lx-site-name { padding-left: 20px; border-left: 1px solid var(--lx-rule); font-size: 14px; }
+.lx-site-nav { gap: 24px; }
+.lx-site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--lx-muted);
+  font-size: 14px;
+  border-bottom: 1px solid transparent;
+}
+.lx-site-nav a:hover, .lx-site-nav a[aria-current='page'] { color: var(--lx-accent); border-bottom-color: currentColor; }
+.lx-site-footer { margin-top: auto; }
+.lx-footer-inner {
+  justify-content: space-between;
+  gap: var(--lx-space-3);
+  min-height: 96px;
+  border-top: var(--lx-rule-width) solid var(--lx-rule);
+  color: var(--lx-muted);
+  font-size: 13px;
+}
+.lx-footer-inner a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.lx-footer-inner a:hover { color: var(--lx-accent); text-decoration: underline; }
+.lx-skip-link {
+  position: fixed;
+  inset: 12px auto auto 18px;
+  z-index: 30;
+  padding: 10px 18px;
+  color: var(--lx-on-accent);
+  background: var(--lx-accent);
+  border-radius: var(--lx-radius);
+  transform: translateY(-200%);
+}
+.lx-skip-link:focus { transform: translateY(0); }
+.lx-icon { width: 20px; height: 20px; flex: none; }
+
+@media (max-width: 759px) {
+  .lx-container { width: calc(100% - 36px); }
+  .lx-header-inner { flex-wrap: wrap; gap: 0; padding-top: 8px; }
+  .lx-brand-group { width: 100%; gap: 16px; }
+  .lx-brand { font-size: 13px; }
+  .lx-site-name { padding-left: 16px; font-size: 13px; }
+  .lx-site-nav { width: 100%; justify-content: space-between; gap: 12px; }
+  .lx-site-nav a { font-size: 13px; white-space: nowrap; }
+  .lx-footer-inner { min-height: 88px; gap: 12px; flex-wrap: wrap; padding-block: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}

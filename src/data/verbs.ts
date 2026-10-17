@@ -100,7 +100,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "core",
     jlptLevel: "N5",
     jlptLevelType: "reference",
-    notes: ["否定形は「あらない」ではなく「ない」です。"],
+    notes: ["否定形為「ない」，不能依一般五段規則變成「あらない」。"],
     sourceRefs: COMMON_SOURCE_REFS,
     overrides: overrides.aru,
   },
@@ -129,7 +129,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "core",
     jlptLevel: "N5",
     jlptLevelType: "reference",
-    notes: ["「て形」と「た形」は行って／行ったになります。"],
+    notes: ["て形為「行って」，た形為「行った」，需特別記憶。"],
     sourceRefs: COMMON_SOURCE_REFS,
     overrides: overrides.iku,
   },
@@ -144,7 +144,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "core",
     jlptLevel: "N5",
     jlptLevelType: "reference",
-    notes: ["「-いる / -える」で終わりますが、五段動詞です。"],
+    notes: ["雖然以「いる／える」結尾，仍屬五段動詞，變化時要用五段規則。"],
     sourceRefs: COMMON_SOURCE_REFS,
   },
   {
@@ -452,7 +452,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "core",
     jlptLevel: "N5",
     jlptLevelType: "reference",
-    notes: ["「-いる / -える」で終わりますが、五段動詞です。"],
+    notes: ["雖然以「いる／える」結尾，仍屬五段動詞，變化時要用五段規則。"],
     sourceRefs: COMMON_SOURCE_REFS,
   },
   {
@@ -522,7 +522,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "common",
     jlptLevel: "N4",
     jlptLevelType: "reference",
-    notes: ["「-いる / -える」で終わりますが、五段動詞です。"],
+    notes: ["雖然以「いる／える」結尾，仍屬五段動詞，變化時要用五段規則。"],
     sourceRefs: COMMON_SOURCE_REFS,
   },
   {
@@ -620,7 +620,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "core",
     jlptLevel: "N5",
     jlptLevelType: "reference",
-    notes: ["「-いる / -える」で終わりますが、五段動詞です。"],
+    notes: ["雖然以「いる／える」結尾，仍屬五段動詞，變化時要用五段規則。"],
     sourceRefs: COMMON_SOURCE_REFS,
   },
   {
@@ -1237,7 +1237,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "common",
     jlptLevel: "N5",
     jlptLevelType: "reference",
-    notes: ["「-いる / -える」で終わりますが、五段動詞です。"],
+    notes: ["雖然以「いる／える」結尾，仍屬五段動詞，變化時要用五段規則。"],
     sourceRefs: COMMON_SOURCE_REFS,
   },
   {
@@ -1251,7 +1251,7 @@ export const VERBS: VerbEntry[] = [
     frequencyTier: "common",
     jlptLevel: "N4",
     jlptLevelType: "reference",
-    notes: ["「-いる / -える」で終わりますが、五段動詞です。"],
+    notes: ["雖然以「いる／える」結尾，仍屬五段動詞，變化時要用五段規則。"],
     sourceRefs: COMMON_SOURCE_REFS,
   },
   {

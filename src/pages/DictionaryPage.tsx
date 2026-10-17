@@ -34,9 +34,8 @@ export function DictionaryPage() {
   return (
     <>
       <header className="page-heading">
-        <p className="eyebrow">DICTIONARY</p>
         <h1>動詞字典</h1>
-        <p>{verbs.length} 個結果</p>
+        <p aria-live="polite">{verbs.length} 個結果</p>
       </header>
       <section className="filter-bar" aria-label="字典篩選">
         <input
@@ -102,6 +101,7 @@ export function DictionaryPage() {
           只顯示常見例外
         </label>
       </section>
+      {verbs.length === 0 && <p className="empty-state" role="status">沒有符合條件的動詞。請調整關鍵字或篩選條件再試一次。</p>}
       <div className="verb-grid">
         {verbs.map((verb) => (
           <VerbCard key={verb.id} verb={verb} />

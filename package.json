@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint:data": "vitest run src/data/validateData.test.ts"
+    "lint:data": "vitest run src/data/validateData.test.ts",
+    "design:sync": "node scripts/sync-lumus-design.mjs",
+    "predev": "npm run design:sync",
+    "prebuild": "npm run design:sync"
   },
   "dependencies": {
     "lucide-react": "^1.17.0",

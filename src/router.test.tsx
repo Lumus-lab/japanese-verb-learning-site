@@ -104,9 +104,13 @@ describe('router', () => {
       screen.getByRole('heading', { name: '不規則動詞變化表' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: '常見 る 結尾五段例外' }),
+      screen.getByRole('heading', { name: '常見例外與特殊變化' }),
     ).toBeInTheDocument()
-    expect(screen.getAllByText(/帰る（かえる）/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/帰る（かえる）/)).toHaveLength(1)
+    expect(screen.getAllByText(/ある（ある）/)).toHaveLength(1)
+    expect(screen.getAllByText(/行く（いく）/)).toHaveLength(1)
+    expect(screen.getByText(/否定形為「ない」/)).toBeInTheDocument()
+    expect(screen.getByText(/て形為「行って」/)).toBeInTheDocument()
   })
 
   it('filters the dictionary by group', async () => {

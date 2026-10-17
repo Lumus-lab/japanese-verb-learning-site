@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { LumusIcon } from './LumusIcon'
 import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -14,7 +14,7 @@ export function SearchBox({ initialQuery = '' }: { initialQuery?: string }) {
 
   return (
     <form className="search-box" onSubmit={submit}>
-      <Search aria-hidden="true" size={20} />
+      <LumusIcon name="search" />
       <input
         aria-label="搜尋動詞"
         onChange={(event) => setQuery(event.target.value)}
