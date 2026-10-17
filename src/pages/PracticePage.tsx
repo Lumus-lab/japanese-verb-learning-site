@@ -108,7 +108,6 @@ export function PracticePage() {
   return (
     <>
       <header className="page-heading">
-        <p className="eyebrow">PRACTICE</p>
         <h1>快速練習</h1>
         <p>題目只使用已核對資料，不記錄進度，隨時都能重新開始。</p>
       </header>
@@ -151,6 +150,9 @@ export function PracticePage() {
         <div className="option-grid">
           {question.options.map((option) => (
             <button
+              aria-pressed={selected === option}
+              className={selected === option ? (selected === question.answer ? 'is-correct' : 'is-incorrect') : undefined}
+              lang={question.kind === 'form' ? 'ja' : undefined}
               disabled={selected !== null}
               key={option}
               onClick={() => setSelected(option)}
@@ -161,6 +163,7 @@ export function PracticePage() {
         </div>
         {selected && (
           <div
+            role="status"
             className={
               selected === question.answer
                 ? 'feedback correct'
